@@ -36,6 +36,7 @@ type EventMessage struct {
 	SenderShortName  string           `json:"sender_short_name"`
 	Subject          string           `json:"subject"`
 	SubjectLinks     []interface{}    `json:"subject_links"`
+	StreamID         int              `json:"stream_id"`
 	Timestamp        int              `json:"timestamp"`
 	Type             string           `json:"type"`
 	Queue            *Queue           `json:"-"`
