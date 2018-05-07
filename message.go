@@ -181,6 +181,17 @@ func (b *Bot) constructMessageRequest(m Message) (*http.Request, error) {
 	return b.constructRequest("POST", "messages", values.Encode())
 }
 
+func (b *Bot) UpdateMessage(id string, content string) (*http.Response, error) {
+	//mid, _ := strconv.Atoi(id)
+	values := url.Values{}
+	values.Set("content", content)
+	req, err := b.constructRequest("PATCH", "messages/"+id, values.Encode())
+	if err != nil {
+		return nil, err
+	}
+	return b.Client.Do(req)
+}
+
 // React adds an emoji reaction to an EventMessage.
 func (b *Bot) React(e EventMessage, emoji string) (*http.Response, error) {
 	url := fmt.Sprintf("messages/%d/emoji_reactions/%s", e.ID, emoji)
