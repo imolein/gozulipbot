@@ -232,7 +232,7 @@ func (b *Bot) RawRegisterEvents(ets []EventType, n Narrow) (*http.Response, erro
 	if n != "" {
 		query += fmt.Sprintf("&narrow=%s", n)
 	}
-
+	query += fmt.Sprintf("&all_public_streams=true")
 	req, err := b.constructRequest("POST", "register", query)
 	if err != nil {
 		return nil, err
