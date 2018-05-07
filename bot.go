@@ -77,6 +77,26 @@ func (b *Bot) GetStreams() ([]string, error) {
 	return streams, nil
 }
 
+// GetStreams returns a list of all public streams
+func (b *Bot) GetRawStreams() (StreamJSON, error) {
+	var sj StreamJSON
+	resp, err := b.GetStreamList()
+	if err != nil {
+		return sj, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return sj, err
+	}
+
+	err = json.Unmarshal(body, &sj)
+	if err != nil {
+		return sj, err
+	}
+	return sj, nil
+}
+
 // Subscribe will set the bot to receive messages from the given streams.
 // If no streams are given, it will subscribe the bot to the streams in the bot struct.
 func (b *Bot) Subscribe(streams []string) (*http.Response, error) {
