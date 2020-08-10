@@ -59,6 +59,7 @@ func (q *Queue) EventsChan() (chan EventMessage, func()) {
 			case err == BackoffError:
 				time.Sleep(time.Until(backoffTime))
 				atomic.AddInt64(&q.Bot.Retries, 1)
+				continue
 			case err == UnauthorizedError:
 				// TODO? have error channel when ending the continuously running process?
 				return
@@ -107,6 +108,7 @@ func (q *Queue) EventsCallback(fn func(EventMessage, error)) func() {
 			case err == BackoffError:
 				time.Sleep(time.Until(backoffTime))
 				atomic.AddInt64(&q.Bot.Retries, 1)
+				continue
 			case err == UnauthorizedError:
 				// TODO? have error channel when ending the continuously running process?
 				return
