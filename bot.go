@@ -10,14 +10,15 @@ import (
 )
 
 type Bot struct {
-	APIKey  string
-	APIURL  string
-	Email   string
-	Queues  []*Queue
-	Streams []string
-	Client  Doer
-	Backoff time.Duration
-	Retries int64
+	APIKey    string
+	APIURL    string
+	Email     string
+	Queues    []*Queue
+	Streams   []string
+	Client    Doer
+	Backoff   time.Duration
+	Retries   int64
+	UserAgent string
 }
 
 type Doer interface {
@@ -117,6 +118,11 @@ func (b *Bot) Subscribe(streams []string) (*http.Response, error) {
 	body := "subscriptions=" + string(bodyBts)
 
 	req, err := b.constructRequest("POST", "users/me/subscriptions", body)
+	if b.UserAgent != "" {
+		req.Header.Set("User-Agent", b.UserAgent)
+	} else {
+		req.Header.Set("User-Agent", fmt.Sprintf("gozulipbot/%s", Release))
+	}
 	if err != nil {
 		return nil, err
 	}
