@@ -174,6 +174,20 @@ func (b *Bot) RegisterEvents(ets []EventType, n Narrow) (*Queue, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		// Try to parse the error out of the body
+		body, err := ioutil.ReadAll(resp.Body)
+		if err == nil {
+			var jsonErr map[string]string
+			err = json.Unmarshal(body, &jsonErr)
+			if err == nil {
+				if msg, ok := jsonErr["msg"]; ok {
+					return nil, fmt.Errorf("Failed to register: %s", msg)
+				}
+			}
+		}
+		return nil, fmt.Errorf("Got non-200 response code when registering: %d", resp.StatusCode)
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
