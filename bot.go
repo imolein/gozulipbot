@@ -118,11 +118,6 @@ func (b *Bot) Subscribe(streams []string) (*http.Response, error) {
 	body := "subscriptions=" + string(bodyBts)
 
 	req, err := b.constructRequest("POST", "users/me/subscriptions", body)
-	if b.UserAgent != "" {
-		req.Header.Set("User-Agent", b.UserAgent)
-	} else {
-		req.Header.Set("User-Agent", fmt.Sprintf("gozulipbot/%s", Release))
-	}
 	if err != nil {
 		return nil, err
 	}
@@ -267,6 +262,12 @@ func (b *Bot) constructRequest(method, endpoint, body string) (*http.Request, er
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.SetBasicAuth(b.Email, b.APIKey)
+
+	if b.UserAgent != "" {
+		req.Header.Set("User-Agent", b.UserAgent)
+	} else {
+		req.Header.Set("User-Agent", fmt.Sprintf("gozulipbot/%s", Release))
+	}
 
 	return req, nil
 }
